@@ -1,4 +1,4 @@
-package com.example.harrison.barbuddy.data
+package com.example.harrison.barbuddy.apidata
 
 data class DrinkResult(val drinks: List<Drinks1274156496>?)
 

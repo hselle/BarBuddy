@@ -2,8 +2,7 @@ package com.example.harrison.barbuddy
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import com.example.harrison.barbuddy.data.DrinkResult
+import com.example.harrison.barbuddy.apidata.DrinkResult
 import com.example.harrison.barbuddy.network.DrinkAPI
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
@@ -33,12 +32,10 @@ class MainActivity : AppCompatActivity() {
             drinkCall.enqueue(object : Callback<DrinkResult> {
 
                 override fun onFailure(call: Call<DrinkResult>, t: Throwable) {
-                    Log.w("FUCK-SHIT-DICK-TIT", "1st fail")
                     tvResult.text = t.message
                 }
 
                 override fun onResponse(call: Call<DrinkResult>, response: Response<DrinkResult>) {
-                    Log.w("FUCK-SHIT-DICK-TIT", "1st response")
                     tvResult.text = response.body().toString()
                     val drinkResult = response.body()
                     var count: Int = 1
@@ -46,13 +43,10 @@ class MainActivity : AppCompatActivity() {
                         val drinkDescriptionCall = drinkAPI.getDetailsById(i.idDrink!!)
                         drinkDescriptionCall.enqueue(object : Callback<DrinkResult>{
                             override fun onFailure(call: Call<DrinkResult>, t: Throwable) {
-                                Log.w("FUCK-SHIT-DICK-TIT", "2nd fail")
                                 tvResult.text = t.message
                             }
 
                             override fun onResponse(call: Call<DrinkResult>?, response: Response<DrinkResult>) {
-                                Log.w("FUCK-SHIT-DICK-TIT", "2nd response")
-                                Log.w("FUCK-SHIT-DICK-TIT", response.body().toString())
                                 tvResult.text = count.toString()
                                 count++
 
@@ -62,7 +56,6 @@ class MainActivity : AppCompatActivity() {
                     }
             }
         })
-            Log.w("FUCK-SHIT-DICK-TIT", "DONE")
 
     }
 

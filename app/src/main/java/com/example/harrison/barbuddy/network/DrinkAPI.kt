@@ -1,6 +1,6 @@
 package com.example.harrison.barbuddy.network
 
-import com.example.harrison.barbuddy.data.DrinkResult
+import com.example.harrison.barbuddy.apidata.DrinkResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

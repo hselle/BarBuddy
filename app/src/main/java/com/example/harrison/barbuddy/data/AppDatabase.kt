@@ -5,10 +5,10 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 
-@Database(entities = arrayOf(Todo::class), version = 1)
+@Database(entities = arrayOf(Ingredient::class), version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun todoDao(): TodoDAO
+    abstract fun ingredientDAO(): IngredientDAO
 
     companion object {
         private var INSTANCE: AppDatabase? = null
@@ -16,7 +16,7 @@ abstract class AppDatabase : RoomDatabase() {
         fun getInstance(context: Context): AppDatabase {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        AppDatabase::class.java, "todos.db")
+                        AppDatabase::class.java, "ingredients.db")
                         .build()
             }
             return INSTANCE!!

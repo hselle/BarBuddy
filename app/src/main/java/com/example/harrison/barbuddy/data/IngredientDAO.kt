@@ -3,7 +3,7 @@ package com.example.harrison.barbuddy.data
 import android.arch.persistence.room.*
 
 @Dao
-interface ingredientDAO {
+interface IngredientDAO {
 
     @Query("SELECT * FROM ingredients")
     fun findAllIngredients(): List<Ingredient>

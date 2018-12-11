@@ -20,4 +20,6 @@ interface DrinkAPI {
     fun getDrinks(@Query("i") base: String) : Call<DrinkResult>
     @GET("/api/json/v1/1/lookup.php")
     fun getDetailsById(@Query("i") base: String) : Call<DetailResult>
+    @GET("/api/json/v1/1/search.php")
+    fun getDetailsByName(@Query("s") base: String) : Call<DetailResult>
 }

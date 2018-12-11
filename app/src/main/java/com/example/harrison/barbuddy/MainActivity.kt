@@ -3,6 +3,7 @@ package com.example.harrison.barbuddy
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
+import android.support.v4.widget.DrawerLayout
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -47,18 +48,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         val drinkAPI = retrofit.create(DrinkAPI::class.java)
-        /*
-        btnRates.setOnClickListener {
-            val makeables = getMakeableDrinks()
-            Log.w("Hi im daisy", makeables.toString())
-            Toast.makeText(this@MainActivity, "BUTTON RECIEVED", Toast.LENGTH_LONG).show()
-            //tvResult.text = makeables.toString()
-        }
 
-        Thread {
-            createDrinkDict(INGREDIENT_LIST, drinkAPI)
-        }.start()
-        */
+//        btnRates.setOnClickListener {
+//            val makeables = getMakeableDrinks()
+//            Log.w("Hi im daisy", makeables.toString())
+//            Toast.makeText(this@MainActivity, "BUTTON RECIEVED", Toast.LENGTH_LONG).show()
+//            tvResult.text = makeables.toString()
+//        }
+//        Thread {
+//            createDrinkDict(INGREDIENT_LIST, drinkAPI)
+//        }.start()
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "greedients", Snackbar.LENGTH_LONG)
@@ -112,6 +111,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_Search -> {
 
             }
+
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
@@ -129,7 +129,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drinkCall.enqueue(object : Callback<DrinkResult> {
             override fun onFailure(call: Call<DrinkResult>, t: Throwable) {
                 Log.w("Debgg", "Fail" + t.message)
-                //tvResult.text = t.message
             }
 
             override fun onResponse(call: Call<DrinkResult>, response: Response<DrinkResult>) {
@@ -149,7 +148,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drinkCall.enqueue(object : Callback<DetailResult> {
             override fun onFailure(call: Call<DetailResult>, t: Throwable) {
                 Log.w("Debgg", "Fail" + t.message)
-                //tvResult.text = t.message
+
             }
 
             override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
@@ -179,6 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         return makeableDrinkList
     }
+
 
     private fun getDrinkDetailsByDrinkId(drinkIds: List<String>, drinkAPI: DrinkAPI) {
         if (drinkIds.isNotEmpty()) {

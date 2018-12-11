@@ -9,7 +9,6 @@ import android.content.Context
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun ingredientDAO(): IngredientDAO
-
     companion object {
         private var INSTANCE: AppDatabase? = null
 

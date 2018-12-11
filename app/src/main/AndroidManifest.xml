@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CocktailsDetailsActivity"></activity>
+        <activity android:name=".CocktailsDetailsActivity" />
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>

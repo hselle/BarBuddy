@@ -42,7 +42,7 @@ class CocktailsDetailsActivity : AppCompatActivity() {
                 val drink = detailResult?.drinks?.get(0)
                 Log.w("Debgg", "SUCESS")
 
-                tvName.text = drink.strDrink
+                tvName.text = drink?.strDrink
                 val ingredientsList = getIngredientsAndAmounts(drink!!)
                 ingredientsList.forEach {ingredient ->
                     val viewIngredient = layoutInflater.inflate(

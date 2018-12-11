@@ -23,7 +23,7 @@
         </activity>
         <activity android:name=".CocktailsDetailsActivity" />
         <activity
-            android:name=".UnicornTrollActivity"
+            android:name=".DrinkActivity"
             android:label="@string/title_activity_unicorn_troll"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

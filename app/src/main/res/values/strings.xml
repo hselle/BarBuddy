@@ -11,4 +11,5 @@
     <string name="search">Search</string>
     <string name="my_ingredients">My Ingredients</string>
     <string name="what_can_i_make">What Can I Make...?</string>
+    <string name="title_activity_unicorn_troll">UnicornTrollActivity</string>
 </resources>

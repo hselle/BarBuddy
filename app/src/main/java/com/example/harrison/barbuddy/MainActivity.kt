@@ -47,18 +47,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         val drinkAPI = retrofit.create(DrinkAPI::class.java)
+        /*
         btnRates.setOnClickListener {
             val makeables = getMakeableDrinks()
             Log.w("Hi im daisy", makeables.toString())
             Toast.makeText(this@MainActivity, "BUTTON RECIEVED", Toast.LENGTH_LONG).show()
-            tvResult.text = makeables.toString()
+            //tvResult.text = makeables.toString()
         }
+
         Thread {
             createDrinkDict(INGREDIENT_LIST, drinkAPI)
         }.start()
+        */
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "greedients", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
 
@@ -96,26 +99,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
+        // about
+        // what can I make...
+        // search tab
         when (item.itemId) {
-            R.id.nav_camera -> {
+            R.id.nav_make -> {
                 // Handle the camera action
             }
-            R.id.nav_gallery -> {
+            R.id.nav_ingredients -> {
 
             }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
+            R.id.nav_Search -> {
 
             }
         }
+        drawer_layout.closeDrawer(GravityCompat.START)
+        return true
     }
 
 
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drinkCall.enqueue(object : Callback<DrinkResult> {
             override fun onFailure(call: Call<DrinkResult>, t: Throwable) {
                 Log.w("Debgg", "Fail" + t.message)
-                tvResult.text = t.message
+                //tvResult.text = t.message
             }
 
             override fun onResponse(call: Call<DrinkResult>, response: Response<DrinkResult>) {
@@ -150,7 +149,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drinkCall.enqueue(object : Callback<DetailResult> {
             override fun onFailure(call: Call<DetailResult>, t: Throwable) {
                 Log.w("Debgg", "Fail" + t.message)
-                tvResult.text = t.message
+                //tvResult.text = t.message
             }
 
             override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
@@ -193,7 +192,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             override fun onFailure(call: Call<DetailResult>, t: Throwable) {
                 Log.w("Debgg", "Fail" + t.message)
-                tvResult.text = t.message
+                //tvResult.text = t.message
             }
 
             override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
@@ -269,8 +268,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return allIngredietns
 
     }
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
-
-
 }

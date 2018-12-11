@@ -8,4 +8,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="ingredient">Ingredient</string>
+    <string name="search">Search</string>
+    <string name="my_ingredients">My Ingredients</string>
+    <string name="what_can_i_make">What Can I Make...?</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.harrison.barbuddy
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
+import android.support.v4.widget.DrawerLayout
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -47,15 +48,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         val drinkAPI = retrofit.create(DrinkAPI::class.java)
-        btnRates.setOnClickListener {
-            val makeables = getMakeableDrinks()
-            Log.w("Hi im daisy", makeables.toString())
-            Toast.makeText(this@MainActivity, "BUTTON RECIEVED", Toast.LENGTH_LONG).show()
-            tvResult.text = makeables.toString()
-        }
-        Thread {
-            createDrinkDict(INGREDIENT_LIST, drinkAPI)
-        }.start()
+//        btnRates.setOnClickListener {
+//            val makeables = getMakeableDrinks()
+//            Log.w("Hi im daisy", makeables.toString())
+//            Toast.makeText(this@MainActivity, "BUTTON RECIEVED", Toast.LENGTH_LONG).show()
+//            tvResult.text = makeables.toString()
+//        }
+//        Thread {
+//            createDrinkDict(INGREDIENT_LIST, drinkAPI)
+//        }.start()
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -115,7 +116,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_send -> {
 
             }
+
         }
+        drawer_layout.closeDrawer(GravityCompat.START)
+        return true
     }
 
 
@@ -130,7 +134,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drinkCall.enqueue(object : Callback<DrinkResult> {
             override fun onFailure(call: Call<DrinkResult>, t: Throwable) {
                 Log.w("Debgg", "Fail" + t.message)
-                tvResult.text = t.message
             }
 
             override fun onResponse(call: Call<DrinkResult>, response: Response<DrinkResult>) {
@@ -150,7 +153,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drinkCall.enqueue(object : Callback<DetailResult> {
             override fun onFailure(call: Call<DetailResult>, t: Throwable) {
                 Log.w("Debgg", "Fail" + t.message)
-                tvResult.text = t.message
             }
 
             override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
@@ -179,34 +181,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         return makeableDrinkList
-    }
-
-    private fun getDrinkDetailsByDrinkId(drinkIds: List<String>, drinkAPI: DrinkAPI) {
-        if (drinkIds.isNotEmpty()) {
-            getDrinkDetails(drinkIds, drinkAPI, drinkIds[0])
-        }
-    }
-
-    fun getDrinkDetails(drinkIds: List<String>, drinkAPI: DrinkAPI, id: String) {
-        val drinkCall = drinkAPI.getDetailsById(id)
-        drinkCall.enqueue(object : Callback<DetailResult> {
-
-            override fun onFailure(call: Call<DetailResult>, t: Throwable) {
-                Log.w("Debgg", "Fail" + t.message)
-                tvResult.text = t.message
-            }
-
-            override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
-                val detailResult = response.body()
-                Log.w("Debgg", "SUCESS")
-
-                detailResult?.drinks?.forEach { i ->
-                    Log.w("Debgg", "Found Drink by Id" + i.strDrink)
-                    DRINKDETAILSLIST.add(i)
-                }
-                getDrinkDetailsByDrinkId(drinkIds.slice(1 until drinkIds.size), drinkAPI)
-            }
-        })
     }
 
     private fun checkAllIngredientsInDrink(drinkDict: HashMap<String, List<String>>, key: String, drinkList: List<String>): Boolean {
@@ -269,8 +243,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return allIngredietns
 
     }
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
+
 
 
 }

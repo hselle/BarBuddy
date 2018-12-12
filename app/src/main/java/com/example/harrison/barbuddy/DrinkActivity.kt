@@ -8,14 +8,14 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_unicorn_troll.*
-import kotlinx.android.synthetic.main.app_bar_unicorn_troll.*
+import kotlinx.android.synthetic.main.activity_drink.*
+import kotlinx.android.synthetic.main.app_bar_activity_drink.*
 
-class UnicornTrollActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class DrinkActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_unicorn_troll)
+        setContentView(R.layout.activity_drink)
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
@@ -41,7 +41,7 @@ class UnicornTrollActivity : AppCompatActivity(), NavigationView.OnNavigationIte
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.unicorn_troll, menu)
+        menuInflater.inflate(R.menu.drink, menu)
         return true
     }
 
@@ -57,27 +57,21 @@ class UnicornTrollActivity : AppCompatActivity(), NavigationView.OnNavigationIte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
+        // about
+        // what can I make...
+        // search tab
         when (item.itemId) {
-            R.id.nav_camera -> {
+            R.id.nav_make -> {
                 // Handle the camera action
             }
-            R.id.nav_gallery -> {
+            R.id.nav_ingredients -> {
 
             }
-            R.id.nav_slideshow -> {
+            R.id.nav_Search -> {
 
             }
-            R.id.nav_manage -> {
 
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }

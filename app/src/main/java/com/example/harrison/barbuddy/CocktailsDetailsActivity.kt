@@ -22,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.IllegalStateException
 
 class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -39,16 +40,19 @@ class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigatio
 
 
         val HOST_URL = "https://www.thecocktaildb.com/"
-        val cocktailName = "Moscow Mule"
-//        if (intent.hasExtra(MainActivity.CocktailDeatailName)) {
-//            val cocktailName = intent.getStringExtra(MainActivity.CocktailDetailName)
-//        }
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(HOST_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        getCocktailDetails(retrofit, cocktailName)
+//        val cocktailName = "Moscow Mule"
+        if (intent.hasExtra(MainActivity.KEY_ACTIVITY_START)) {
+            val cocktailName = intent.getStringExtra(MainActivity.KEY_ACTIVITY_START)
+            Log.w("cocktail detail deb", cocktailName)
+            val retrofit = Retrofit.Builder()
+                    .baseUrl(HOST_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+            getCocktailDetails(retrofit, cocktailName)
+        }
+        else{
+            throw IllegalStateException("could not find cocktail name")
+            }
     }
 
     private fun getCocktailDetails(retrofit: Retrofit, cocktailName: String) {
@@ -67,6 +71,7 @@ class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigatio
                 Log.w("Debgg", "SUCESS")
 
                 tvName.text = drink?.strDrink ?: "ERROR"
+                tvRecipe.text = getRecipe(drink!!).toString()
                 val ingredientsDict = getIngredientsAndAmounts(drink!!)
                 ingredientsDict.keys.forEach { ingredient ->
                     val viewIngredient = layoutInflater.inflate(
@@ -74,9 +79,9 @@ class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigatio
                     )
 
                     viewIngredient.tvIngredientName.text = ingredient
-                    viewIngredient.tvAmount.text = ingredientsDict[ingredient]
+                    viewIngredient.tvAmount.text = ingredientsDict[ingredient] + "    "
 
-                    cocktails.addView(viewIngredient)
+                    ingredients.addView(viewIngredient)
                 }
 
             }

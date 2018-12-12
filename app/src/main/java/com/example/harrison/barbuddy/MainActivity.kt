@@ -10,6 +10,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.util.Log
+import android.widget.Toast
 import com.example.harrison.barbuddy.adapter.IngredientAdapter
 import com.example.harrison.barbuddy.apidata.DetailResult
 import com.example.harrison.barbuddy.apidata.DrinkResult
@@ -21,6 +22,7 @@ import com.example.harrison.barbuddy.touch.TouchHelperCallback
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.dialog_search.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,7 +30,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, AddIngredientDialog.IngredientHandler {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, AddIngredientDialog.IngredientHandler, SearchDialog.SearchHandler {
+
+    companion object {
+        val KEY_ACTIVITY_START = "KEY_ACTIVITY_START"
+    }
     private val HOST_URL = "https://www.thecocktaildb.com/"
     private var DRINKIDLIST = mutableListOf<String>()
     private var DRINKDETAILSLIST = mutableListOf<Drinks734794428>()
@@ -42,17 +48,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-
-//        btnRates.setOnClickListener {
-//            val makeables = getMakeableDrinks()
-//            Log.w("Hi im daisy", makeables.toString())
-//            Toast.makeText(this@MainActivity, "BUTTON RECIEVED", Toast.LENGTH_LONG).show()
-//            tvResult.text = makeables.toString()
-//        }
-//        Thread {
-//            createDrinkDict(INGREDIENT_LIST, drinkAPI)
-//        }.start()
 
         fab.setOnClickListener { view ->
             showAddIngredientDialog()
@@ -95,6 +90,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun showAddIngredientDialog() {
         AddIngredientDialog().show(supportFragmentManager,
+                "TAG_CREATE")
+    }
+    private fun showSearchDialog() {
+        SearchDialog().show(supportFragmentManager,
                 "TAG_CREATE")
     }
 
@@ -141,13 +140,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_ingredients -> {
-
+                Toast.makeText(this@MainActivity, "This'r alreddy yur greediens", Toast.LENGTH_LONG).show()
             }
             R.id.nav_Search -> {
-
+                showSearchDialog()
             }
             R.id.nav_about -> {
-                var intent: Intent = Intent(this, AboutActivity::class.java)
+                var intent = Intent(this, AboutActivity::class.java)
                 startActivity(intent)
             }
 
@@ -332,6 +331,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
         }.start()
+    }
+    override fun newSearch(drinkName: String) {
+        var intentSearch= Intent()
+        intentSearch.setClass(this@MainActivity, CocktailsDetailsActivity::class.java)
+
+        intentSearch.putExtra(KEY_ACTIVITY_START, drinkName)
+
+        startActivity(intentSearch)
     }
 
 }

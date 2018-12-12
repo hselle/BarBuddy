@@ -8,16 +8,22 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.util.Log
 import android.widget.Toast
+import com.example.harrison.barbuddy.adapter.Adapter
 import com.example.harrison.barbuddy.apidata.DetailResult
 import com.example.harrison.barbuddy.apidata.DrinkResult
 import com.example.harrison.barbuddy.apidata.Drinks734794428
+import com.example.harrison.barbuddy.data.AppDatabase
+import com.example.harrison.barbuddy.data.Ingredient
 import com.example.harrison.barbuddy.network.DrinkAPI
+import com.example.harrison.barbuddy.touch.TouchHelperCallback
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,12 +31,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, AddIngredientDialog.IngredientHandler {
     private val HOST_URL = "https://www.thecocktaildb.com/"
     private var DRINKIDLIST = mutableListOf<String>()
     private var INGREDIENT_LIST = mutableListOf<String>()
     private var DRINKDETAILSLIST = mutableListOf<Drinks734794428>()
     private var DRINK_DICT = hashMapOf<String, List<String>>()
+
+    private lateinit var ingredientAdapter : Adapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,9 +69,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        }.start()
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "greedients", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            showAddIngredientDialog()
         }
+
+        initRecyclerView()
+
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -71,6 +81,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+    }
+
+    private fun initRecyclerView() {
+        Thread {
+            val todoList = AppDatabase.getInstance(
+                    this@MainActivity
+            ).ingredientDAO().findAllIngredients()
+
+            ingredientAdapter = Adapter(
+                    this@MainActivity,
+                    todoList
+            )
+
+            runOnUiThread {
+                rvInventory.adapter = ingredientAdapter
+
+                val callback = TouchHelperCallback(ingredientAdapter)
+                val touchHelper = ItemTouchHelper(callback)
+                touchHelper.attachToRecyclerView(rvInventory)
+            }
+        }.start()
+    }
+
+
+    private fun showAddIngredientDialog() {
+        AddIngredientDialog().show(supportFragmentManager,
+                "TAG_CREATE")
     }
 
     override fun onBackPressed() {
@@ -224,53 +261,68 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     fun getAllIngredients(drink: Drinks734794428): MutableList<String> {
-        var allIngredietns = mutableListOf<String>()
+        var allIngredients = mutableListOf<String>()
         if (drink.strIngredient1 != "") {
-            allIngredietns.add(drink.strIngredient1.toString())
+            allIngredients.add(drink.strIngredient1.toString())
         }
         if (drink.strIngredient2 != "") {
-            allIngredietns.add(drink.strIngredient2.toString())
+            allIngredients.add(drink.strIngredient2.toString())
         }
         if (drink.strIngredient3 != "") {
-            allIngredietns.add(drink.strIngredient3.toString())
+            allIngredients.add(drink.strIngredient3.toString())
         }
         if (drink.strIngredient4 != "") {
-            allIngredietns.add(drink.strIngredient4.toString())
+            allIngredients.add(drink.strIngredient4.toString())
         }
         if (drink.strIngredient5 != "") {
-            allIngredietns.add(drink.strIngredient5.toString())
+            allIngredients.add(drink.strIngredient5.toString())
         }
         if (drink.strIngredient6 != "") {
-            allIngredietns.add(drink.strIngredient6.toString())
+            allIngredients.add(drink.strIngredient6.toString())
         }
         if (drink.strIngredient7 != "") {
-            allIngredietns.add(drink.strIngredient7.toString())
+            allIngredients.add(drink.strIngredient7.toString())
         }
         if (drink.strIngredient8 != "") {
-            allIngredietns.add(drink.strIngredient8.toString())
+            allIngredients.add(drink.strIngredient8.toString())
         }
         if (drink.strIngredient9 != "") {
-            allIngredietns.add(drink.strIngredient9.toString())
+            allIngredients.add(drink.strIngredient9.toString())
         }
         if (drink.strIngredient10 != "") {
-            allIngredietns.add(drink.strIngredient10.toString())
+            allIngredients.add(drink.strIngredient10.toString())
         }
         if (drink.strIngredient11 != "") {
-            allIngredietns.add(drink.strIngredient11.toString())
+            allIngredients.add(drink.strIngredient11.toString())
         }
         if (drink.strIngredient12 != "") {
-            allIngredietns.add(drink.strIngredient12.toString())
+            allIngredients.add(drink.strIngredient12.toString())
         }
         if (drink.strIngredient13 != "") {
-            allIngredietns.add(drink.strIngredient13.toString())
+            allIngredients.add(drink.strIngredient13.toString())
         }
         if (drink.strIngredient14 != "") {
-            allIngredietns.add(drink.strIngredient14.toString())
+            allIngredients.add(drink.strIngredient14.toString())
         }
         if (drink.strIngredient15 != "") {
-            allIngredietns.add(drink.strIngredient15.toString())
+            allIngredients.add(drink.strIngredient15.toString())
         }
-        return allIngredietns
+        return allIngredients
 
     }
+
+    override fun ingredientCreated(item: Ingredient) {
+        Thread {
+            val ingredientId = AppDatabase.getInstance(
+                    this@MainActivity).ingredientDAO().insertIngredient(item)
+
+            item.ingredientId = ingredientId
+
+            runOnUiThread {
+                ingredientAdapter.addIngredient(item)
+
+            }
+        }.start()
+    }
+
 }

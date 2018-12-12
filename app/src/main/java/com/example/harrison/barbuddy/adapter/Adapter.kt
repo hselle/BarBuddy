@@ -51,6 +51,12 @@ class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>, TouchHelperAdapter {
         }
     }
 
+    fun addIngredient(ingredient: Ingredient) {
+        ingredients.add(0, ingredient)
+        //notifyDataSetChanged()
+        notifyItemInserted(0)
+    }
+
     private fun deleteIngredient(adapterPosition: Int) {
         Thread {
             AppDatabase.getInstance(
@@ -70,13 +76,6 @@ class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>, TouchHelperAdapter {
         val btnDelete = itemView.floatingActionButton2
     }
 
-
-    fun addIngredient(ingredient: Ingredient) {
-        ingredients.add(0, ingredient)
-        //notifyDataSetChanged()
-        notifyItemInserted(0)
-    }
-
     override fun onDismissed(position: Int) {
         deleteIngredient(position)
     }
@@ -84,11 +83,6 @@ class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>, TouchHelperAdapter {
     override fun onItemMoved(fromPosition: Int, toPosition: Int) {
         Collections.swap(ingredients, fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
-    }
-
-    fun updateTodo(item: Ingredient, editIndex: Int) {
-        ingredients[editIndex] = item
-        notifyItemChanged(editIndex)
     }
 
 }

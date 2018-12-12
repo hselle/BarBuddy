@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.harrison.barbuddy.MainActivity
 import com.example.harrison.barbuddy.R
 import com.example.harrison.barbuddy.data.AppDatabase
@@ -14,7 +13,7 @@ import com.example.harrison.barbuddy.touch.TouchHelperAdapter
 import kotlinx.android.synthetic.main.inventory_row.view.*
 import java.util.*
 
-class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>, TouchHelperAdapter {
+class IngredientAdapter : RecyclerView.Adapter<IngredientAdapter.ViewHolder>, TouchHelperAdapter {
 
 
     var ingredients = mutableListOf<Ingredient>()
@@ -48,7 +47,16 @@ class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>, TouchHelperAdapter {
 
         holder.btnDelete.setOnClickListener {
             deleteIngredient(holder.adapterPosition)
+            (context as MainActivity).createDrinkDict(getAllIngredients())
         }
+    }
+
+    fun getAllIngredients() : MutableList<String> {
+        var returnVal = mutableListOf<String>()
+        ingredients.forEach {
+            returnVal.add(it.ingredientName)
+        }
+        return returnVal
     }
 
     fun addIngredient(ingredient: Ingredient) {

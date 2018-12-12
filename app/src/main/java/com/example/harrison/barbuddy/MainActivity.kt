@@ -2,9 +2,7 @@ package com.example.harrison.barbuddy
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
-import android.support.v4.widget.DrawerLayout
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -12,8 +10,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.util.Log
-import android.widget.Toast
-import com.example.harrison.barbuddy.adapter.Adapter
+import com.example.harrison.barbuddy.adapter.IngredientAdapter
 import com.example.harrison.barbuddy.apidata.DetailResult
 import com.example.harrison.barbuddy.apidata.DrinkResult
 import com.example.harrison.barbuddy.apidata.Drinks734794428
@@ -34,29 +31,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, AddIngredientDialog.IngredientHandler {
     private val HOST_URL = "https://www.thecocktaildb.com/"
     private var DRINKIDLIST = mutableListOf<String>()
-    private var INGREDIENT_LIST = mutableListOf<String>()
     private var DRINKDETAILSLIST = mutableListOf<Drinks734794428>()
     private var DRINK_DICT = hashMapOf<String, List<String>>()
 
-    private lateinit var ingredientAdapter : Adapter
+    private lateinit var ingredientAdapter : IngredientAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        INGREDIENT_LIST.add("Wild Turkey")
-        INGREDIENT_LIST.add("Amaretto")
-        INGREDIENT_LIST.add("Scotch")
 
-        INGREDIENT_LIST.add("Pineapple juice")
-
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(HOST_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        val drinkAPI = retrofit.create(DrinkAPI::class.java)
 
 //        btnRates.setOnClickListener {
 //            val makeables = getMakeableDrinks()
@@ -81,18 +66,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
     }
 
     private fun initRecyclerView() {
         Thread {
-            val todoList = AppDatabase.getInstance(
+            val ingredientList = AppDatabase.getInstance(
                     this@MainActivity
             ).ingredientDAO().findAllIngredients()
 
-            ingredientAdapter = Adapter(
+            ingredientAdapter = IngredientAdapter(
                     this@MainActivity,
-                    todoList
+                    ingredientList
             )
+            createDrinkDict(ingredientAdapter.getAllIngredients())
 
             runOnUiThread {
                 rvInventory.adapter = ingredientAdapter
@@ -141,7 +128,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // search tab
         when (item.itemId) {
             R.id.nav_make -> {
-                // Handle the camera action
+                var intent: Intent = Intent(this, ResultsActivity::class.java)
+                val cocktailList = getMakeableDrinks()
+                Log.w("Thing", ingredientAdapter.getAllIngredients().toString())
+                Log.w("Thing2", cocktailList.toString())
+                intent.putExtra("cocktails", cocktailList.toTypedArray())
+                startActivity(intent)
+
             }
             R.id.nav_ingredients -> {
 
@@ -160,7 +153,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-    private fun createDrinkDict(ingredientList: List<String>, drinkAPI: DrinkAPI) {
+    fun createDrinkDict(ingredientList: List<String>) {
+        val retrofit = Retrofit.Builder()
+                .baseUrl(HOST_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        val drinkAPI = retrofit.create(DrinkAPI::class.java)
         ingredientList.forEach {
             addToDictPipeline(it, drinkAPI)
         }
@@ -214,7 +212,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val makeableDrinkList = mutableListOf<String>()
 
         DRINK_DICT.keys.forEach { key ->
-            if (checkAllIngredientsInDrink(DRINK_DICT, key, INGREDIENT_LIST)) {
+            if (checkAllIngredientsInDrink(DRINK_DICT, key, ingredientAdapter.getAllIngredients())) {
                 makeableDrinkList.add(key)
             }
         }
@@ -312,6 +310,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun ingredientCreated(item: Ingredient) {
+        createDrinkDict(ingredientAdapter.getAllIngredients())
+
         Thread {
             val ingredientId = AppDatabase.getInstance(
                     this@MainActivity).ingredientDAO().insertIngredient(item)

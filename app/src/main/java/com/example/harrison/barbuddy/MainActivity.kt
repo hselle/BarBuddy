@@ -24,6 +24,7 @@ import com.example.harrison.barbuddy.touch.TouchHelperCallback
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.dialog_search.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,7 +32,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, AddIngredientDialog.IngredientHandler {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, AddIngredientDialog.IngredientHandler, SearchDialog.SearchHandler {
+
+    companion object {
+        val KEY_ACTIVITY_START = "KEY_ACTIVITY_START"
+    }
     private val HOST_URL = "https://www.thecocktaildb.com/"
     private var DRINKIDLIST = mutableListOf<String>()
     private var INGREDIENT_LIST = mutableListOf<String>()
@@ -48,25 +53,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         INGREDIENT_LIST.add("Wild Turkey")
         INGREDIENT_LIST.add("Amaretto")
         INGREDIENT_LIST.add("Scotch")
-
         INGREDIENT_LIST.add("Pineapple juice")
 
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(HOST_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        val drinkAPI = retrofit.create(DrinkAPI::class.java)
-
-//        btnRates.setOnClickListener {
-//            val makeables = getMakeableDrinks()
-//            Log.w("Hi im daisy", makeables.toString())
-//            Toast.makeText(this@MainActivity, "BUTTON RECIEVED", Toast.LENGTH_LONG).show()
-//            tvResult.text = makeables.toString()
-//        }
-//        Thread {
-//            createDrinkDict(INGREDIENT_LIST, drinkAPI)
-//        }.start()
 
         fab.setOnClickListener { view ->
             showAddIngredientDialog()
@@ -109,6 +97,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         AddIngredientDialog().show(supportFragmentManager,
                 "TAG_CREATE")
     }
+    private fun showSearchDialog() {
+        SearchDialog().show(supportFragmentManager,
+                "TAG_CREATE")
+    }
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -141,16 +133,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // search tab
         when (item.itemId) {
             R.id.nav_make -> {
-                // Handle the camera action
+
             }
             R.id.nav_ingredients -> {
-
+                Toast.makeText(this@MainActivity, "This'r alreddy yur greediens", Toast.LENGTH_LONG).show()
             }
             R.id.nav_Search -> {
-
+                showSearchDialog()
             }
             R.id.nav_about -> {
-                var intent: Intent = Intent(this, AboutActivity::class.java)
+                var intent = Intent(this, AboutActivity::class.java)
                 startActivity(intent)
             }
 
@@ -323,6 +315,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
         }.start()
+    }
+    override fun newSearch(drinkName: String) {
+        var intentSearch= Intent()
+        intentSearch.setClass(this@MainActivity, CocktailsDetailsActivity::class.java)
+
+        intentSearch.putExtra(KEY_ACTIVITY_START, drinkName)
+
+        startActivity(intentSearch)
     }
 
 }

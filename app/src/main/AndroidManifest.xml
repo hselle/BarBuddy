@@ -16,24 +16,21 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:theme="@style/AppTheme.NoActionBar" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
         <activity
             android:name=".CocktailsDetailsActivity"
             android:label="CocktailDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity
-            android:name=".DrinkActivity"
-            android:label="@string/title_activity_unicorn_troll"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".AboutActivity"></activity>
+
+        <activity android:name=".AboutActivity" />
+
     </application>
 
 </manifest>

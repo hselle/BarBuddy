@@ -3,6 +3,7 @@ package com.example.harrison.barbuddy
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.example.harrison.barbuddy.apidata.DetailResult
 import com.example.harrison.barbuddy.apidata.Drinks734794428
 import com.example.harrison.barbuddy.network.DrinkAPI
@@ -35,6 +36,7 @@ class CocktailsDetailsActivity : AppCompatActivity() {
         drinkCall.enqueue(object : Callback<DetailResult> {
             override fun onFailure(call: Call<DetailResult>, t: Throwable) {
                 Log.w("Debgg", "Fail in CocktailsActivity" + t.message)
+                Toast.makeText(this@CocktailsDetailsActivity, "No response from api", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
@@ -56,6 +58,9 @@ class CocktailsDetailsActivity : AppCompatActivity() {
 
             }
         })
+    }
+    fun getRecipe(drink: Drinks734794428): String? {
+         return drink?.strInstructions
     }
     fun getIngredientsAndAmounts(drink: Drinks734794428): MutableList<MutableList<String>> {
         var allIngredietns: MutableList<MutableList<String>> = arrayListOf()

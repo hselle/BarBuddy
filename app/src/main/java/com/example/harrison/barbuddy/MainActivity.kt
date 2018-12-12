@@ -52,7 +52,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fab.setOnClickListener { view ->
             showAddIngredientDialog()
         }
-
+        btnGoToResult.setOnClickListener{
+            var intent: Intent = Intent(this, ResultsActivity::class.java)
+            val cocktailList = getMakeableDrinks()
+            intent.putExtra("cocktails", cocktailList.toTypedArray())
+            for (i in 0..cocktailList.size) {
+                try {
+                    intent.putExtra(cocktailList.get(i), URL_DICT[cocktailList.get(i)])
+                } catch (e: Exception) {
+                }
+            }
+            startActivity(intent)
+        }
         initRecyclerView()
 
 
@@ -92,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         AddIngredientDialog().show(supportFragmentManager,
                 "TAG_CREATE")
     }
-    private fun showSearchDialog() {
+    fun showSearchDialog() {
         SearchDialog().show(supportFragmentManager,
                 "TAG_CREATE")
     }
@@ -127,18 +138,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // what can I make...
         // search tab
         when (item.itemId) {
-            R.id.nav_make -> {
-                var intent: Intent = Intent(this, ResultsActivity::class.java)
-                val cocktailList = getMakeableDrinks()
-                intent.putExtra("cocktails", cocktailList.toTypedArray())
-                for (i in 0..cocktailList.size) {
-                    try {
-                        intent.putExtra(cocktailList.get(i), URL_DICT[cocktailList.get(i)])
-                    } catch (e : Exception) {}
-                }
-                startActivity(intent)
-
-            }
             R.id.nav_ingredients -> {
                 Toast.makeText(this@MainActivity, "This'r alreddy yur greediens", Toast.LENGTH_LONG).show()
             }

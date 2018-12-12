@@ -1,5 +1,6 @@
 package com.example.harrison.barbuddy
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -24,7 +25,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.IllegalStateException
 
-class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SearchDialog.SearchHandler {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,14 +124,16 @@ class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigatio
         // what can I make...
         // search tab
         when (item.itemId) {
-            R.id.nav_make -> {
-                // Handle the camera action
-            }
             R.id.nav_ingredients -> {
-
+                var intent = Intent(this, AboutActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_Search -> {
-
+                showSearchDialog()
+            }
+            R.id.nav_about->{
+                var intent = Intent(this, AboutActivity::class.java)
+                startActivity(intent)
             }
 
         }
@@ -187,6 +191,18 @@ class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigatio
 
         return allIngredietns
 
+    }
+    fun showSearchDialog() {
+        SearchDialog().show(supportFragmentManager,
+                "TAG_CREATE")
+    }
+    override fun newSearch(drinkName: String) {
+        var intentSearch= Intent()
+        intentSearch.setClass(this@CocktailsDetailsActivity, CocktailsDetailsActivity::class.java)
+
+        intentSearch.putExtra(MainActivity.KEY_ACTIVITY_START, drinkName)
+
+        startActivity(intentSearch)
     }
 }
 

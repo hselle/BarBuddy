@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.content_results.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SearchDialog.SearchHandler {
 
     private lateinit var cocktailAdapter : CocktailAdapter
     private val HOST_URL = "https://www.thecocktaildb.com/"
@@ -90,16 +90,13 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_make -> {
-                var intent: Intent = Intent(this, ResultsActivity::class.java)
-                startActivity(intent)
-
-            }
             R.id.nav_ingredients -> {
-
+                val intentMain = Intent()
+                intentMain.setClass(this@ResultsActivity, MainActivity::class.java)
+                startActivity(intentMain)
             }
             R.id.nav_Search -> {
-
+                showSearchDialog()
             }
             R.id.nav_about -> {
                 var intent: Intent = Intent(this, AboutActivity::class.java)
@@ -109,5 +106,17 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+    fun showSearchDialog() {
+        SearchDialog().show(supportFragmentManager,
+                "TAG_CREATE")
+    }
+    override fun newSearch(drinkName: String) {
+        var intentSearch= Intent()
+        intentSearch.setClass(this@ResultsActivity, CocktailsDetailsActivity::class.java)
+
+        intentSearch.putExtra(MainActivity.KEY_ACTIVITY_START, drinkName)
+
+        startActivity(intentSearch)
     }
 }

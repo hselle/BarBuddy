@@ -14,4 +14,5 @@
     <string name="about_text">Bar Buddy allows you to find recipes for mixed drinks. Search for a particular drink recipe, or find drinks you cam make based on the ingredients you have. Created by Ari Conati, Harrison Selle, and Gabriel Pinkard.</string>
     <string name="bar_buddy">Bar Buddy</string>
     <string name="about">About</string>
+    <string name="title_activity_results">ResultsActivity</string>
 </resources>

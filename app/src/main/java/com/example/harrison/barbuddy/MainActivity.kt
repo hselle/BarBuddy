@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var DRINKIDLIST = mutableListOf<String>()
     private var DRINKDETAILSLIST = mutableListOf<Drinks734794428>()
     private var DRINK_DICT = hashMapOf<String, List<String>>()
+    private var URL_DICT = hashMapOf<String, String>()
 
     private lateinit var ingredientAdapter : IngredientAdapter
 
@@ -54,9 +55,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         btnGoToResult.setOnClickListener{
             var intent: Intent = Intent(this, ResultsActivity::class.java)
             val cocktailList = getMakeableDrinks()
-            Log.w("Thing", ingredientAdapter.getAllIngredients().toString())
-            Log.w("Thing2", cocktailList.toString())
             intent.putExtra("cocktails", cocktailList.toTypedArray())
+            for (i in 0..cocktailList.size) {
+                try {
+                    intent.putExtra(cocktailList.get(i), URL_DICT[cocktailList.get(i)])
+                } catch (e: Exception) {
+                }
+            }
             startActivity(intent)
         }
         initRecyclerView()
@@ -133,7 +138,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // what can I make...
         // search tab
         when (item.itemId) {
-
             R.id.nav_ingredients -> {
                 Toast.makeText(this@MainActivity, "This'r alreddy yur greediens", Toast.LENGTH_LONG).show()
             }
@@ -196,9 +200,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 detailResult?.drinks?.forEach { drink ->
                     Log.w("Debgg", "Found Drink by Id" + drink.strDrink)
                     makeDictEntryPipe(drink)
+                    makeDrinkUrlEntry(drink)
                 }
             }
         })
+    }
+
+    fun makeDrinkUrlEntry(drink : Drinks734794428) {
+            URL_DICT[drink.strDrink.toString()] = drink.strDrinkThumb.toString()
     }
 
     fun makeDictEntryPipe(drink: Drinks734794428) {

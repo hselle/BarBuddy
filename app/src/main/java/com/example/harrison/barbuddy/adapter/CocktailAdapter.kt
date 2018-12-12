@@ -7,12 +7,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.example.harrison.barbuddy.CocktailsDetailsActivity
 import com.example.harrison.barbuddy.MainActivity
 import com.example.harrison.barbuddy.R
+import com.example.harrison.barbuddy.ResultsActivity
 import com.example.harrison.barbuddy.data.Cocktail
 import kotlinx.android.synthetic.main.cocktail_row.view.*
-import java.util.*
 
 class CocktailAdapter : RecyclerView.Adapter<CocktailAdapter.ViewHolder>{
 
@@ -51,6 +52,9 @@ class CocktailAdapter : RecyclerView.Adapter<CocktailAdapter.ViewHolder>{
 
         }
         holder.tvName.text = cocktail.name
+        Glide.with(context as ResultsActivity)
+                .load(cocktail.imageUrl)
+                .into(holder.imageView)
 
     }
 
@@ -66,6 +70,7 @@ class CocktailAdapter : RecyclerView.Adapter<CocktailAdapter.ViewHolder>{
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
         val tvName = itemView.tvName
+        val imageView = itemView.imageView
     }
 
 }

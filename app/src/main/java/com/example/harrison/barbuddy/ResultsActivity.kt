@@ -49,7 +49,7 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         Thread {
             var cocktailList = mutableListOf<Cocktail>()
             intent.getStringArrayExtra("cocktails").forEach {
-                cocktailList.add(Cocktail(it))
+                cocktailList.add(Cocktail(it, intent.getStringExtra(it)))
             }
             cocktailAdapter = CocktailAdapter(
                     this@ResultsActivity,

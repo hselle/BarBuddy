@@ -43,6 +43,7 @@ class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigatio
 //        val cocktailName = "Moscow Mule"
         if (intent.hasExtra(MainActivity.KEY_ACTIVITY_START)) {
             val cocktailName = intent.getStringExtra(MainActivity.KEY_ACTIVITY_START)
+            Log.w("cocktail detail deb", cocktailName)
             val retrofit = Retrofit.Builder()
                     .baseUrl(HOST_URL)
                     .addConverterFactory(GsonConverterFactory.create())

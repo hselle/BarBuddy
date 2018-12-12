@@ -125,7 +125,7 @@ class CocktailsDetailsActivity : AppCompatActivity(), NavigationView.OnNavigatio
         // search tab
         when (item.itemId) {
             R.id.nav_ingredients -> {
-                var intent = Intent(this, AboutActivity::class.java)
+                var intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             }
             R.id.nav_Search -> {

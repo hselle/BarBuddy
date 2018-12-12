@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">BarBuddy</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">My Ingredients</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -15,7 +15,7 @@
     <string name="about_text">Bar Buddy allows you to find recipes for mixed drinks. Search for a particular drink recipe, or find drinks you cam make based on the ingredients you have. Created by Ari Conati, Harrison Selle, and Gabriel Pinkard.</string>
     <string name="bar_buddy">Bar Buddy</string>
     <string name="about">About</string>
-    <string name="title_activity_results">ResultsActivity</string>
+    <string name="title_activity_results">Make-able Drinks</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="white_russian">white russian</string>
     <string name="show_drinks">Show me the drinks</string>

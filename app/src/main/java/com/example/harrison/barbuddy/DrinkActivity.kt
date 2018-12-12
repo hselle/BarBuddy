@@ -61,9 +61,6 @@ class DrinkActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         // what can I make...
         // search tab
         when (item.itemId) {
-            R.id.nav_make -> {
-                // Handle the camera action
-            }
             R.id.nav_ingredients -> {
 
             }

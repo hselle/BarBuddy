@@ -27,7 +27,7 @@
         </activity>
         <activity
             android:name=".CocktailsDetailsActivity"
-            android:label="CocktailDetailsActivity"
+            android:label="@string/title_cocktail_details"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".DrinkActivity"

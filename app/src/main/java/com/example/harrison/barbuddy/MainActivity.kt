@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fab.setOnClickListener { view ->
             showAddIngredientDialog()
         }
-        btnGoToResult.setOnClickListener{
+        showMeTheDrinks.setOnClickListener{
             var intent: Intent = Intent(this, ResultsActivity::class.java)
             val cocktailList = getMakeableDrinks()
             intent.putExtra("cocktails", cocktailList.toTypedArray())

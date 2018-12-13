@@ -19,4 +19,5 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="white_russian">white russian</string>
     <string name="show_drinks">Show me the drinks</string>
+    <string name="title_cocktail_details">Recipe</string>
 </resources>

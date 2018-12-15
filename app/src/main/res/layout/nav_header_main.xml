@@ -23,6 +23,6 @@
         android:background="@android:color/background_light"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/what_can_i_make_icon" />
+        app:srcCompat="@drawable/icon" />
 
 </LinearLayout>

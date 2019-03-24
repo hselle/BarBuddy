@@ -59,7 +59,10 @@ class CocktailAdapter : RecyclerView.Adapter<CocktailAdapter.ViewHolder>{
     }
 
     fun addCocktail(cocktail: Cocktail) {
-        cocktails.add(0, cocktail)
+        if(!cocktails.contains(cocktail)){
+            cocktails.add(0, cocktail)
+            notifyItemInserted(0)
+        }
     }
 
     private fun deleteCocktail(position: Int) {

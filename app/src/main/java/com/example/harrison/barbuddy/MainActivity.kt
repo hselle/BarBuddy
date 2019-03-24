@@ -35,11 +35,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     companion object {
         val KEY_ACTIVITY_START = "KEY_ACTIVITY_START"
     }
-    private val HOST_URL = "https://www.thecocktaildb.com/"
-    private var DRINKIDLIST = mutableListOf<String>()
-    private var DRINKDETAILSLIST = mutableListOf<Drinks734794428>()
-    private var DRINK_DICT = hashMapOf<String, List<String>>()
-    private var URL_DICT = hashMapOf<String, String>()
 
     private lateinit var ingredientAdapter : IngredientAdapter
 
@@ -53,16 +48,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             showAddIngredientDialog()
         }
         showMeTheDrinks.setOnClickListener{
-            var intent: Intent = Intent(this, ResultsActivity::class.java)
-            val cocktailList = getMakeableDrinks()
-            intent.putExtra("cocktails", cocktailList.toTypedArray())
-            for (i in 0..cocktailList.size) {
-                try {
-                    intent.putExtra(cocktailList.get(i), URL_DICT[cocktailList.get(i)])
-                } catch (e: Exception) {
-                }
-            }
-            startActivity(intent)
+            var intent = Intent(this, ResultsActivity::class.java)
+            Thread{
+                val ingredientList = AppDatabase.getInstance(
+                        this@MainActivity
+                ).ingredientDAO().findAllIngredients()
+                intent.putExtra("ingredients", ingredientList.toTypedArray())
+                startActivity(intent)
+            }.start()
+
         }
         initRecyclerView()
 
@@ -86,7 +80,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     this@MainActivity,
                     ingredientList
             )
-            createDrinkDict(ingredientAdapter.getAllIngredients())
 
             runOnUiThread {
                 rvInventory.adapter = ingredientAdapter
@@ -155,170 +148,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-    fun createDrinkDict(ingredientList: List<String>) {
-        val retrofit = Retrofit.Builder()
-                .baseUrl(HOST_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        val drinkAPI = retrofit.create(DrinkAPI::class.java)
-        ingredientList.forEach {
-            addToDictPipeline(it, drinkAPI)
-        }
-    }
-
-    fun addToDictPipeline(ingredient: String, drinkAPI: DrinkAPI) {
-        val drinkCall = drinkAPI.getDrinks(ingredient)
-        drinkCall.enqueue(object : Callback<DrinkResult> {
-            override fun onFailure(call: Call<DrinkResult>, t: Throwable) {
-                Log.w("Debgg", "Fail" + t.message)
-            }
-
-            override fun onResponse(call: Call<DrinkResult>, response: Response<DrinkResult>) {
-                val drinkResult = response.body()
-                Log.w("Debgg", "SUCESS")
-
-                drinkResult?.drinks?.forEach { i ->
-                    Log.w("Debgg", "Found Drink by Ingrediet " + i.idDrink)
-                    drinkToDetailResultPipe(i.idDrink!!, drinkAPI)
-                }
-            }
-        })
-    }
-
-    fun drinkToDetailResultPipe(drink: String, drinkAPI: DrinkAPI) {
-        val drinkCall = drinkAPI.getDetailsById(drink)
-        drinkCall.enqueue(object : Callback<DetailResult> {
-            override fun onFailure(call: Call<DetailResult>, t: Throwable) {
-                Log.w("Debgg", "Fail" + t.message)
-
-            }
-
-            override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
-                val detailResult = response.body()
-                Log.w("Debgg", "SUCESS")
-
-                detailResult?.drinks?.forEach { drink ->
-                    Log.w("Debgg", "Found Drink by Id" + drink.strDrink)
-                    makeDictEntryPipe(drink)
-                    makeDrinkUrlEntry(drink)
-                }
-            }
-        })
-    }
-
-    fun makeDrinkUrlEntry(drink : Drinks734794428) {
-            URL_DICT[drink.strDrink.toString()] = drink.strDrinkThumb.toString()
-    }
-
-    fun makeDictEntryPipe(drink: Drinks734794428) {
-        DRINK_DICT[drink.strDrink.toString()] = getAllIngredients(drink)
-        Log.w("Createddbg", "Made drink Dickt entry: " + DRINK_DICT[drink.strDrink.toString()])
-    }
-
-    fun getMakeableDrinks(): List<String> {
-        val makeableDrinkList = mutableListOf<String>()
-
-        DRINK_DICT.keys.forEach { key ->
-            if (checkAllIngredientsInDrink(DRINK_DICT, key, ingredientAdapter.getAllIngredients())) {
-                makeableDrinkList.add(key)
-            }
-        }
-        return makeableDrinkList
-    }
-
-
-    private fun getDrinkDetailsByDrinkId(drinkIds: List<String>, drinkAPI: DrinkAPI) {
-        if (drinkIds.isNotEmpty()) {
-            getDrinkDetails(drinkIds, drinkAPI, drinkIds[0])
-        }
-    }
-
-    fun getDrinkDetails(drinkIds: List<String>, drinkAPI: DrinkAPI, id: String) {
-        val drinkCall = drinkAPI.getDetailsById(id)
-        drinkCall.enqueue(object : Callback<DetailResult> {
-
-            override fun onFailure(call: Call<DetailResult>, t: Throwable) {
-                Log.w("Debgg", "Fail" + t.message)
-                //tvResult.text = t.message
-            }
-
-            override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
-                val detailResult = response.body()
-                Log.w("Debgg", "SUCESS")
-
-                detailResult?.drinks?.forEach { i ->
-                    Log.w("Debgg", "Found Drink by Id" + i.strDrink)
-                    DRINKDETAILSLIST.add(i)
-                }
-                getDrinkDetailsByDrinkId(drinkIds.slice(1 until drinkIds.size), drinkAPI)
-            }
-        })
-    }
-
-    private fun checkAllIngredientsInDrink(drinkDict: HashMap<String, List<String>>, key: String, drinkList: List<String>): Boolean {
-        drinkDict[key]!!.forEach { ingredient ->
-            if (!drinkList.contains(ingredient)) {
-                return false
-            }
-        }
-        return true
-    }
-
-
-    fun getAllIngredients(drink: Drinks734794428): MutableList<String> {
-        var allIngredients = mutableListOf<String>()
-        if (drink.strIngredient1 != "") {
-            allIngredients.add(drink.strIngredient1.toString())
-        }
-        if (drink.strIngredient2 != "") {
-            allIngredients.add(drink.strIngredient2.toString())
-        }
-        if (drink.strIngredient3 != "") {
-            allIngredients.add(drink.strIngredient3.toString())
-        }
-        if (drink.strIngredient4 != "") {
-            allIngredients.add(drink.strIngredient4.toString())
-        }
-        if (drink.strIngredient5 != "") {
-            allIngredients.add(drink.strIngredient5.toString())
-        }
-        if (drink.strIngredient6 != "") {
-            allIngredients.add(drink.strIngredient6.toString())
-        }
-        if (drink.strIngredient7 != "") {
-            allIngredients.add(drink.strIngredient7.toString())
-        }
-        if (drink.strIngredient8 != "") {
-            allIngredients.add(drink.strIngredient8.toString())
-        }
-        if (drink.strIngredient9 != "") {
-            allIngredients.add(drink.strIngredient9.toString())
-        }
-        if (drink.strIngredient10 != "") {
-            allIngredients.add(drink.strIngredient10.toString())
-        }
-        if (drink.strIngredient11 != "") {
-            allIngredients.add(drink.strIngredient11.toString())
-        }
-        if (drink.strIngredient12 != "") {
-            allIngredients.add(drink.strIngredient12.toString())
-        }
-        if (drink.strIngredient13 != "") {
-            allIngredients.add(drink.strIngredient13.toString())
-        }
-        if (drink.strIngredient14 != "") {
-            allIngredients.add(drink.strIngredient14.toString())
-        }
-        if (drink.strIngredient15 != "") {
-            allIngredients.add(drink.strIngredient15.toString())
-        }
-        return allIngredients
-
-    }
-
     override fun ingredientCreated(item: Ingredient) {
-        createDrinkDict(ingredientAdapter.getAllIngredients())
-
         Thread {
             val ingredientId = AppDatabase.getInstance(
                     this@MainActivity).ingredientDAO().insertIngredient(item)

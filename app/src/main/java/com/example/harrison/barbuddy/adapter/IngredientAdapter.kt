@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.harrison.barbuddy.MainActivity
 import com.example.harrison.barbuddy.R
+import com.example.harrison.barbuddy.ResultsActivity
 import com.example.harrison.barbuddy.data.AppDatabase
 import com.example.harrison.barbuddy.data.Ingredient
 import com.example.harrison.barbuddy.touch.TouchHelperAdapter
@@ -47,7 +48,7 @@ class IngredientAdapter : RecyclerView.Adapter<IngredientAdapter.ViewHolder>, To
 
         holder.btnDelete.setOnClickListener {
             deleteIngredient(holder.adapterPosition)
-            (context as MainActivity).createDrinkDict(getAllIngredients())
+            (context as ResultsActivity).runMakeableDrinksThread()
         }
     }
 

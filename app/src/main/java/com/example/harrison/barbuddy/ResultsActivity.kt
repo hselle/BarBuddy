@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.example.harrison.barbuddy.adapter.CocktailAdapter
 import com.example.harrison.barbuddy.adapter.IngredientAdapter
 import com.example.harrison.barbuddy.apidata.DetailResult
@@ -32,11 +33,9 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
     private lateinit var cocktailAdapter : CocktailAdapter
     private val HOST_URL = "https://www.thecocktaildb.com/"
-    private var DRINKIDLIST = mutableListOf<String>()
     private var DRINKDETAILSLIST = mutableListOf<Drinks734794428>()
     private var DRINK_DICT = hashMapOf<String, List<String>>()
     private var URL_DICT = hashMapOf<String, String>()
-    private var MAKEABLE_DRINK_LIST = mutableListOf<String>()
     private var INGREDIENTS = listOf<Ingredient>()
 
 
@@ -44,12 +43,6 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_results)
         setSupportActionBar(toolbar)
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(HOST_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        val drinkAPI = retrofit.create(DrinkAPI::class.java)
 
         runMakeableDrinksThread()
 
@@ -95,15 +88,16 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val drinkCall = drinkAPI.getDrinks(ingredient)
         drinkCall.enqueue(object : Callback<DrinkResult> {
             override fun onFailure(call: Call<DrinkResult>, t: Throwable) {
-                Log.w("Debgg", "Fail" + t.message)
+                Log.w("API-Debug", "Fail in addToDictPipeline" + t.message)
+                Toast.makeText(this@ResultsActivity, "cocktaildb gave no response: " + t.message, Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<DrinkResult>, response: Response<DrinkResult>) {
                 val drinkResult = response.body()
-                Log.w("Debgg", "SUCESS")
+                Log.w("API-Debug", "Got a response from cocktailDB: $drinkResult")
 
                 drinkResult?.drinks?.forEach { i ->
-                    Log.w("Debgg", "Found Drink by Ingrediet " + i.idDrink)
+                    Log.w("API-Debug", "Found Drink by Ingrediet " + i.idDrink)
                     drinkToDetailResultPipe(i.idDrink!!, drinkAPI)
                 }
             }
@@ -114,16 +108,16 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val drinkCall = drinkAPI.getDetailsById(drink)
         drinkCall.enqueue(object : Callback<DetailResult> {
             override fun onFailure(call: Call<DetailResult>, t: Throwable) {
-                Log.w("Debgg", "Fail" + t.message)
-
+                Log.w("API-Debug", "Fail in drinkToDetailResultPipe" + t.message)
+                Toast.makeText(this@ResultsActivity, "cocktaildb gave no response: " + t.message, Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
                 val detailResult = response.body()
-                Log.w("Debgg", "SUCESS")
+                Log.w("API-Debug", "Got a response from cocktailDB: $detailResult")
 
                 detailResult?.drinks?.forEach { drink ->
-                    Log.w("Debgg", "Found Drink by Id" + drink.strDrink)
+                    Log.w("API-Debug", "Found Drink by Id" + drink.strDrink)
                     makeDictEntryPipe(drink)
                     makeDrinkUrlEntry(drink)
                 }
@@ -138,20 +132,15 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
     fun makeDictEntryPipe(drink: Drinks734794428) {
         DRINK_DICT[drink.strDrink.toString()] = getAllIngredients(drink)
-//        Log.w("Createddbg", "Made drink Dickt entry: " + DRINK_DICT[drink.strDrink.toString()])
     }
 
     fun getMakeableDrinks(){
         Log.w("ALL DRINKS:", DRINK_DICT.toString())
         DRINK_DICT.keys.forEach { key ->
             if (checkAllIngredientsInDrink(DRINK_DICT, key, stringifyIngredients(INGREDIENTS))) {
-                //MAKEABLE_DRINK_LIST.add(key)
                 cocktailAdapter.addCocktail(Cocktail(key, URL_DICT[key]))
             }
         }
-//        runOnUiThread{
-//            rvCocktails.adapter = cocktailAdapter
-//        }
     }
     private fun getDrinkDetailsByDrinkId(drinkIds: List<String>, drinkAPI: DrinkAPI) {
         if (drinkIds.isNotEmpty()) {
@@ -164,16 +153,16 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         drinkCall.enqueue(object : Callback<DetailResult> {
 
             override fun onFailure(call: Call<DetailResult>, t: Throwable) {
-                Log.w("Debgg", "Fail" + t.message)
-                //tvResult.text = t.message
+                Log.w("API-Debug", "Fail in getDrinkDetails" + t.message)
+                Toast.makeText(this@ResultsActivity, "cocktaildb gave no response: " + t.message, Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<DetailResult>, response: Response<DetailResult>) {
                 val detailResult = response.body()
-                Log.w("Debgg", "SUCESS")
+                Log.w("API-Debug", "Got a response from cocktailDB: $detailResult")
 
                 detailResult?.drinks?.forEach { i ->
-                    Log.w("Debgg", "Found Drink by Id" + i.strDrink)
+                    Log.w("API-Debug", "Found Drink by Id" + i.strDrink)
                     DRINKDETAILSLIST.add(i)
                 }
                 getDrinkDetailsByDrinkId(drinkIds.slice(1 until drinkIds.size), drinkAPI)
@@ -184,7 +173,6 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private fun checkAllIngredientsInDrink(drinkDict: HashMap<String, List<String>>, key: String, ingredientList: String): Boolean {
         drinkDict[key]!!.forEach { ingredient ->
             if (!ingredientList.contains(ingredient)) {
-                Log.w("Did not find:", key)
                 return false
             }
         }
@@ -247,15 +235,10 @@ class ResultsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private fun initRecyclerView() {
         Thread {
             var cocktailList = mutableListOf<Cocktail>()
-//            MAKEABLE_DRINK_LIST.forEach{
-//                cocktailList.add(Cocktail(it, URL_DICT[it]))
-//            }
-
             cocktailAdapter = CocktailAdapter(
                     this@ResultsActivity,
                      cocktailList
             )
-
             runOnUiThread {
                 rvCocktails.adapter = cocktailAdapter
             }

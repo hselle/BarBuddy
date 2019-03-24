@@ -48,21 +48,11 @@ class IngredientAdapter : RecyclerView.Adapter<IngredientAdapter.ViewHolder>, To
 
         holder.btnDelete.setOnClickListener {
             deleteIngredient(holder.adapterPosition)
-            (context as ResultsActivity).runMakeableDrinksThread()
         }
-    }
-
-    fun getAllIngredients() : MutableList<String> {
-        var returnVal = mutableListOf<String>()
-        ingredients.forEach {
-            returnVal.add(it.ingredientName)
-        }
-        return returnVal
     }
 
     fun addIngredient(ingredient: Ingredient) {
         ingredients.add(0, ingredient)
-        //notifyDataSetChanged()
         notifyItemInserted(0)
     }
 
